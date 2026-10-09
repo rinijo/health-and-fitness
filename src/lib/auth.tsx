@@ -8,6 +8,7 @@ import {
   type User,
 } from 'firebase/auth'
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { isAllowedUser } from './allowedUser'
 import { getFirebaseAuth, isFirebaseConfigured } from './firebase'
 
 interface AuthContextValue {
@@ -48,12 +49,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const auth = getFirebaseAuth()
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
+      if (nextUser && !isAllowedUser(nextUser)) {
+        setError('This Google account is not allowed to use this app.')
+        void signOut(auth)
+        return
+      }
+      if (nextUser) setError(null)
       setUser(nextUser)
       setReady(true)
     })
 
     getRedirectResult(auth)
       .then((result) => {
+        if (result?.user && !isAllowedUser(result.user)) {
+          setError('This Google account is not allowed to use this app.')
+          return signOut(auth)
+        }
         if (result?.user) setError(null)
       })
       .catch((cause: unknown) => {
