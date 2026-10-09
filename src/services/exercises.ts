@@ -12,8 +12,6 @@ export async function listExercises(): Promise<Exercise[]> {
       return {
         id: data.id ?? item.id,
         name: data.name ?? item.id,
-        gifUrl: data.gifUrl ?? '',
-        youtubeUrl: data.youtubeUrl ?? '',
         instructions: data.instructions ?? '',
         notes: data.notes ?? '',
         variation: data.variation ?? '',

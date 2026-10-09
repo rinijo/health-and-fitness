@@ -2,12 +2,11 @@ import type { Exercise } from '../types/exercise'
 import type { Plan, PlanExercise, WeightNote } from '../types/plan'
 import type { Warmup } from '../types/warmup'
 import type { WorkoutLog } from '../types/workoutLog'
+import { EXERCISE_INSTRUCTIONS } from './exerciseCopy'
 
 function media(id: string) {
   return {
-    gifUrl: `https://example.com/gif/${id}.gif`,
-    youtubeUrl: `https://www.youtube.com/watch?v=placeholder-${id}`,
-    instructions: '',
+    instructions: EXERCISE_INSTRUCTIONS[id] ?? '',
     notes: '',
     variation: '',
   }

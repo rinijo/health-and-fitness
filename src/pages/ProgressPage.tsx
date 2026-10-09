@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
 import { planExerciseIds, prescriptionsFor } from '../domain/exerciseStats'
+import { PLAN_WEEKDAY, planName, sessionTitle } from '../domain/schedule'
 import { useAppData } from '../hooks/useAppData'
-import { formatWeight } from '../lib/format'
+import { formatCurrentPrescription, formatWeight } from '../lib/format'
+import type { PlanId } from '../types/plan'
+
+const PLAN_ORDER: PlanId[] = ['A', 'B', 'C']
 
 export function ProgressPage() {
   const { exercises, plans, loading, error, reload } = useAppData()
@@ -27,11 +31,15 @@ export function ProgressPage() {
 
   const ids = new Set(planExerciseIds(plans))
   const strengthExercises = exercises.filter((exercise) => ids.has(exercise.id))
+  const byId = new Map(exercises.map((exercise) => [exercise.id, exercise]))
+  const orderedPlans = PLAN_ORDER.flatMap((id) => {
+    const plan = plans.find((item) => item.id === id)
+    return plan ? [plan] : []
+  })
 
   return (
-    <main className="px-4">
+    <main className="px-4 pb-8">
       <h1 className="text-3xl font-semibold text-fog">Exercises</h1>
-      <p className="mt-2 text-fog/80">Open an exercise for history, media, and a suggestion. Changes stay in your control.</p>
       <div className="card-grid mt-5">
         {strengthExercises.map((exercise) => {
           const planned = prescriptionsFor(exercise.id, plans)[0]
@@ -43,10 +51,7 @@ export function ProgressPage() {
             >
               <h2 className="text-xl font-semibold text-fog">{exercise.name}</h2>
               {planned ? (
-                <p className="mt-2 text-fog/80">
-                  {formatWeight(planned.weight, planned.weightNote)} · {planned.sets} sets ·{' '}
-                  {planned.reps} reps
-                </p>
+                <p className="mt-2 text-fog/80">{formatCurrentPrescription(planned)}</p>
               ) : (
                 <p className="mt-2 text-fog/70">No current prescription</p>
               )}
@@ -54,6 +59,53 @@ export function ProgressPage() {
           )
         })}
       </div>
+
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold text-fog">Plans</h2>
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-fog/20 bg-panel">
+          <table className="w-full min-w-[28rem] text-left">
+            <thead>
+              <tr className="border-b border-fog/20 text-sm text-fog/70">
+                <th className="px-4 py-3 font-semibold">Plan</th>
+                <th className="px-4 py-3 font-semibold">Day</th>
+                <th className="px-4 py-3 font-semibold">Exercises</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderedPlans.map((plan) => {
+                const rows = [...plan.exercises]
+                  .sort((a, b) => a.order - b.order)
+                  .map((item) => ({
+                    name: byId.get(item.exerciseId)?.name ?? item.exerciseId,
+                    detail: `${formatWeight(item.weight, item.weightNote)} · ${item.sets} × ${item.reps}`,
+                  }))
+
+                return (
+                  <tr key={plan.id} className="border-b border-fog/20 last:border-b-0 align-top">
+                    <td className="px-4 py-3 font-semibold text-fog whitespace-nowrap">
+                      {planName(plan.id)}
+                      <span className="mt-1 block text-sm font-normal text-fog/70">
+                        {sessionTitle(plan.id)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-fog whitespace-nowrap">{PLAN_WEEKDAY[plan.id]}</td>
+                    <td className="px-4 py-3 text-fog">
+                      <ol className="list-decimal space-y-1 pl-4">
+                        {rows.map((row) => (
+                          <li key={row.name}>
+                            {row.name}
+                            <span className="block text-sm text-fog/70">{row.detail}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
   )
 }

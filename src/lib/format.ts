@@ -1,4 +1,4 @@
-import type { WeightNote } from '../types/plan'
+import type { PlanExercise, WeightNote } from '../types/plan'
 
 export function formatWeight(weight: number, weightNote: WeightNote | string = ''): string {
   if (weightNote === 'bodyweight' || (weight === 0 && weightNote !== 'light resistance band')) {
@@ -11,6 +11,21 @@ export function formatWeight(weight: number, weightNote: WeightNote | string = '
     return `${weight} kg each hand`
   }
   return `${weight} kg`
+}
+
+export function formatCurrentPrescription(planned: PlanExercise): string {
+  const weight =
+    planned.weightNote === 'bodyweight' ||
+    (planned.weight === 0 && planned.weightNote !== 'light resistance band')
+      ? 'Bodyweight'
+      : planned.weightNote === 'light resistance band'
+        ? 'Light band'
+        : planned.weightNote === 'each hand'
+          ? `${planned.weight}kg each hand`
+          : `${planned.weight}kg`
+  const timed = /\b(sec|min)\b/i.test(planned.reps)
+  const reps = timed ? planned.reps : `${planned.reps} reps`
+  return `Current: ${weight} - ${reps} - ${planned.sets} sets`
 }
 
 export function parseRepsValue(reps: string): number | null {

@@ -34,8 +34,14 @@ export async function ensureWarmupSeeded(): Promise<void> {
       storedName !== exercise.name &&
       /dumbbell/i.test(storedName) &&
       !/dumbbell/i.test(exercise.name)
-    if (leftoverDumbbell) {
-      await setDoc(ref, { name: exercise.name }, { merge: true })
+    const storedInstructions = String(snapshot.data()?.instructions ?? '')
+    const patch: { name?: string; instructions?: string } = {}
+    if (leftoverDumbbell) patch.name = exercise.name
+    if (!storedInstructions.trim() && exercise.instructions) {
+      patch.instructions = exercise.instructions
+    }
+    if (Object.keys(patch).length > 0) {
+      await setDoc(ref, patch, { merge: true })
     }
   }
 

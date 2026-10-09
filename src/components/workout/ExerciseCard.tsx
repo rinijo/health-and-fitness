@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { formatWeight } from '../../lib/format'
+import { formatCurrentPrescription } from '../../lib/format'
 import type { Exercise } from '../../types/exercise'
 import type { PlanExercise } from '../../types/plan'
 
@@ -9,7 +9,6 @@ interface ExerciseCardProps {
   checked: boolean
   logged?: boolean
   showLog?: boolean
-  showMedia?: boolean
   showWeight?: boolean
   onCheck: (checked: boolean) => void
   onLog?: () => void
@@ -21,12 +20,11 @@ export function ExerciseCard({
   checked,
   logged = false,
   showLog = true,
-  showMedia = true,
   showWeight = true,
   onCheck,
   onLog,
 }: ExerciseCardProps) {
-  const showActions = showMedia || (showLog && onLog)
+  const showActions = showLog && onLog
   const detailTo = `/exercises/${exercise.id}`
 
   return (
@@ -47,47 +45,26 @@ export function ExerciseCard({
         </label>
         <div className="pointer-events-none min-w-0 flex-1">
           <h3 className="text-lg font-semibold leading-6 text-fog">{exercise.name}</h3>
-          <p className="mt-1 text-base text-fog/80">
-            {planned.sets} × {planned.reps}
-          </p>
           {showWeight ? (
-            <p className="text-base text-fog/80">{formatWeight(planned.weight, planned.weightNote)}</p>
-          ) : null}
+            <p className="mt-1 text-base text-fog/80">{formatCurrentPrescription(planned)}</p>
+          ) : (
+            <p className="mt-1 text-base text-fog/80">
+              {planned.sets} × {planned.reps}
+            </p>
+          )}
           {logged ? <p className="mt-1 text-sm font-medium text-lime">Logged today</p> : null}
         </div>
       </div>
 
       {showActions ? (
         <div className="relative z-10 mt-auto flex flex-wrap gap-2 pt-4">
-          {showMedia ? (
-            <>
-              <a
-                href={exercise.gifUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-11 items-center rounded-xl border border-fog/30 px-3 text-sm font-semibold text-fog"
-              >
-                GIF
-              </a>
-              <a
-                href={exercise.youtubeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-11 items-center rounded-xl border border-fog/30 px-3 text-sm font-semibold text-fog"
-              >
-                YouTube
-              </a>
-            </>
-          ) : null}
-          {showLog && onLog ? (
-            <button
-              type="button"
-              onClick={onLog}
-              className="ml-auto inline-flex min-h-11 items-center rounded-xl bg-lime px-4 text-sm font-semibold text-app"
-            >
-              Log Result
-            </button>
-          ) : null}
+          <button
+            type="button"
+            onClick={onLog}
+            className="ml-auto inline-flex min-h-11 items-center rounded-xl bg-lime px-4 text-sm font-semibold text-app"
+          >
+            Log Result
+          </button>
         </div>
       ) : null}
     </article>

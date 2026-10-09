@@ -8,8 +8,7 @@ import {
 } from '../domain/exerciseStats'
 import { progressSuggestion } from '../domain/suggestion'
 import { useAppData } from '../hooks/useAppData'
-import { formatWeight, parseRepsValue } from '../lib/format'
-import { isUsableMediaUrl } from '../lib/media'
+import { formatCurrentPrescription, parseRepsValue } from '../lib/format'
 import { saveExercise } from '../services/exercises'
 import { updateExercisePrescription } from '../services/plans'
 
@@ -51,11 +50,7 @@ export function ExerciseDetailPage() {
   const oldest = history.at(-1)?.entry
   const best = bestSession(history.map((item) => item.entry))
   const suggestion = planned
-    ? progressSuggestion(
-        planned.reps,
-        history.map((item) => item.entry),
-        planned.weightNote,
-      )
+    ? progressSuggestion(planned, history.map((item) => item.entry))
     : 'Add this exercise to a plan to get a suggestion.'
 
   const chronological = [...history].reverse()
@@ -74,8 +69,6 @@ export function ExerciseDetailPage() {
   const [notes, setNotes] = useState('')
   const [variation, setVariation] = useState('')
   const [instructions, setInstructions] = useState('')
-  const [gifUrl, setGifUrl] = useState('')
-  const [youtubeUrl, setYoutubeUrl] = useState('')
 
   useEffect(() => {
     if (!exercise || !planned) return
@@ -85,8 +78,6 @@ export function ExerciseDetailPage() {
     setNotes(exercise.notes)
     setVariation(exercise.variation)
     setInstructions(exercise.instructions)
-    setGifUrl(exercise.gifUrl)
-    setYoutubeUrl(exercise.youtubeUrl)
   }, [exercise, planned])
 
   async function handleSave(event: FormEvent) {
@@ -101,8 +92,6 @@ export function ExerciseDetailPage() {
         notes: notes.trim(),
         variation: variation.trim(),
         instructions: instructions.trim(),
-        gifUrl: gifUrl.trim(),
-        youtubeUrl: youtubeUrl.trim(),
       }
       await saveExercise(nextExercise)
       const nextPlans = await updateExercisePrescription(
@@ -163,10 +152,7 @@ export function ExerciseDetailPage() {
 
       <section className="mt-6 rounded-2xl border border-fog/20 bg-panel p-4">
         {planned ? (
-          <p className="text-xl font-semibold text-lime">
-            {formatWeight(planned.weight, planned.weightNote)} · {planned.sets} sets · {planned.reps}{' '}
-            reps
-          </p>
+          <p className="text-xl font-semibold text-lime">{formatCurrentPrescription(planned)}</p>
         ) : (
           <p className="text-fog/80">Not in a current plan.</p>
         )}
@@ -188,36 +174,9 @@ export function ExerciseDetailPage() {
 
       <section className="mt-5 rounded-2xl border border-fog/20 bg-panel p-4">
         <h2 className="text-lg font-semibold text-fog">Instructions</h2>
-        <p className="mt-2 text-fog/80">{exercise.instructions || 'Add a short description below.'}</p>
-      </section>
-
-      <section className="mt-5 rounded-2xl border border-fog/20 bg-panel p-4">
-        <h2 className="text-lg font-semibold text-fog">Watch</h2>
-        <div className="mt-3 space-y-4">
-          <div>
-            <p className="text-sm font-semibold text-fog/80">GIF</p>
-            {isUsableMediaUrl(exercise.gifUrl) ? (
-              <img src={exercise.gifUrl} alt="" className="mt-2 max-h-64 w-full rounded-xl object-contain" />
-            ) : (
-              <p className="mt-2 text-fog/70">Add a GIF URL below.</p>
-            )}
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-fog/80">YouTube demonstration</p>
-            {isUsableMediaUrl(exercise.youtubeUrl) ? (
-              <a
-                href={exercise.youtubeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-2 inline-flex min-h-12 items-center rounded-xl bg-lime px-4 font-semibold text-app"
-              >
-                Watch video
-              </a>
-            ) : (
-              <p className="mt-2 text-fog/70">Add a YouTube URL below.</p>
-            )}
-          </div>
-        </div>
+        <p className="mt-2 whitespace-pre-line text-fog/80">
+          {exercise.instructions || 'Add a short description below.'}
+        </p>
       </section>
 
       <section className="mt-5 grid grid-cols-2 gap-3">
@@ -293,22 +252,6 @@ export function ExerciseDetailPage() {
               onChange={(event) => setInstructions(event.target.value)}
               rows={3}
               className="mt-2 w-full rounded-xl border border-fog/30 bg-app px-3 py-2 text-base text-fog"
-            />
-          </label>
-          <label className="mt-4 block text-sm font-semibold text-fog">
-            GIF URL
-            <input
-              value={gifUrl}
-              onChange={(event) => setGifUrl(event.target.value)}
-              className="mt-2 min-h-12 w-full rounded-xl border border-fog/30 bg-app px-3 text-base text-fog"
-            />
-          </label>
-          <label className="mt-4 block text-sm font-semibold text-fog">
-            YouTube URL
-            <input
-              value={youtubeUrl}
-              onChange={(event) => setYoutubeUrl(event.target.value)}
-              className="mt-2 min-h-12 w-full rounded-xl border border-fog/30 bg-app px-3 text-base text-fog"
             />
           </label>
 

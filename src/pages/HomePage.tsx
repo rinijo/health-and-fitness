@@ -122,7 +122,6 @@ export function HomePage() {
                     planned={planned}
                     checked={checkedIds.includes(`warmup-${exercise.id}`)}
                     showLog={false}
-                    showMedia={false}
                     showWeight={false}
                     onCheck={(checked) => toggleChecked(`warmup-${exercise.id}`, checked)}
                   />

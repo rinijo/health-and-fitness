@@ -183,8 +183,6 @@ function PlanFields<T extends { id: string; name: string; exercises: PlanExercis
   async function addNew() {
     const exercise = await createExercise({
       name: newName.trim(),
-      gifUrl: `https://example.com/gif/${Date.now()}.gif`,
-      youtubeUrl: 'https://www.youtube.com/watch?v=placeholder',
       instructions: '',
       notes: '',
       variation: '',
@@ -269,16 +267,6 @@ function PlanFields<T extends { id: string; name: string; exercises: PlanExercis
                 ))}
               </select>
             </label>
-            <TextField
-              label="GIF URL"
-              value={exercise.gifUrl}
-              onChange={(value) => onExerciseChange({ ...exercise, gifUrl: value })}
-            />
-            <TextField
-              label="YouTube URL"
-              value={exercise.youtubeUrl}
-              onChange={(value) => onExerciseChange({ ...exercise, youtubeUrl: value })}
-            />
             <div className="mt-3 flex flex-wrap gap-2">
               <button
                 type="button"

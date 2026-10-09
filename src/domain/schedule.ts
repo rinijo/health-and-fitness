@@ -36,6 +36,12 @@ export function planName(planId: PlanId): string {
   return `Plan ${planId}`
 }
 
+export const PLAN_WEEKDAY: Record<PlanId, string> = {
+  A: 'Tuesday',
+  B: 'Thursday',
+  C: 'Saturday',
+}
+
 export function todayHeadline(planId: PlanId | null, date = new Date()): string {
   const kind = dayKindForDate(date)
   if (kind === 'dance') return "We're doing dance"

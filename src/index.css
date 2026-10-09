@@ -7,6 +7,12 @@
   --color-panel: #2f2f2f;
 }
 
+@layer utilities {
+  .text-fog {
+    color: #a6ff1e;
+  }
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
