@@ -1,0 +1,266 @@
+export interface BankSection {
+  title: string
+  items: string[]
+}
+
+export interface BankGroup {
+  id: string
+  title: string
+  note?: string
+  later?: boolean
+  items?: string[]
+  sections?: BankSection[]
+}
+
+export const CARDIO_WALK = {
+  name: 'Walking',
+  duration: '20 min',
+}
+
+export const CARDIO_PICK =
+  'Pick 1 balance, 2 mobility, 1 coordination, 1 functional movement, and 1 floor exercise.'
+
+export const CARDIO_BANK: BankGroup[] = [
+  {
+    id: 'balance',
+    title: 'Balance',
+    note: 'Especially useful: single-leg stand, heel-to-toe walking, controlled step-down, and reaching.',
+    items: [
+      'Two-foot narrow stance',
+      'Tandem stance',
+      'Heel-to-toe walking',
+      'Single-leg stand',
+      'Single-leg stand with head turns',
+      'Single-leg stand while reaching',
+      'Single-leg stand with eyes closed (only near support)',
+      'Clock reaches',
+      'Single-leg hip hinge/reach',
+      'Controlled step-down',
+      'Step-up and controlled step-down',
+      'Sideways stepping',
+      'Grapevine/side crossover walking',
+    ],
+  },
+  {
+    id: 'mobility',
+    title: 'Mobility',
+    sections: [
+      {
+        title: 'Ankles',
+        items: [
+          'Ankle circles',
+          'Ankle pumps',
+          'Knee-to-wall ankle mobility',
+          'Calf stretch',
+          'Bent-knee calf stretch',
+          'Heel raises with slow lowering',
+        ],
+      },
+      {
+        title: 'Hips',
+        items: [
+          'Hip circles',
+          'Hip flexor stretch',
+          'Figure-4/glute stretch',
+          '90/90 hip rotations',
+          '90/90 switches',
+          'Adductor rock-backs',
+          'Supported deep squat',
+          'Squat-to-stand',
+          'Hip CARs',
+        ],
+      },
+      {
+        title: 'Spine',
+        items: [
+          'Cat-cow',
+          'Thoracic rotations',
+          'Open-book rotations',
+          'Thread-the-needle',
+          'Seated torso rotations',
+          'Gentle spinal flexion/extension',
+        ],
+      },
+      {
+        title: 'Shoulders',
+        items: [
+          'Shoulder circles',
+          'Arm circles',
+          'Wall slides',
+          'Wall angels',
+          'Shoulder flexion against wall',
+          'Cross-body shoulder stretch',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'floor',
+    title: 'Floor mobility & independence',
+    note: 'Practising the movements is the training. No need to make these exhausting.',
+    items: [
+      'Sit down onto floor and stand back up',
+      'Floor → kneeling',
+      'Kneeling → standing',
+      'Half-kneeling position',
+      'Half-kneeling → standing',
+      'Side-sit → cross-legged',
+      'Cross-legged → side-sit',
+      'Cross-legged → kneeling',
+      'Supported deep squat → floor',
+      'Floor → supported squat → standing',
+      'Rolling from back → side → sitting',
+      'Sit-to-floor using one hand',
+      'Sit-to-floor without hands',
+      'Floor-to-stand without furniture',
+    ],
+  },
+  {
+    id: 'foot',
+    title: 'Foot & ankle stability',
+    items: [
+      'Single-leg stand',
+      'Heel raises',
+      'Slow heel raises',
+      'Single-leg heel raises',
+      'Toe raises',
+      'Toe spreading',
+      'Short-foot exercise',
+      'Foot arch contractions',
+      'Heel-to-toe walking',
+      'Walking on heels',
+      'Walking on toes',
+      'Side stepping',
+      'Forward/backward stepping',
+      'Controlled step-downs',
+      'Ankle inversion/eversion with band',
+    ],
+  },
+  {
+    id: 'coordination',
+    title: 'Coordination',
+    note: 'Make these harder later with direction changes, arm movements, or faster reactions.',
+    items: [
+      'Marching in place',
+      'High-knee marching',
+      'Opposite hand-to-knee marching',
+      'Cross-body marching',
+      'Side-to-side stepping',
+      'Forward/backward stepping',
+      'Step-touch',
+      'Grapevine',
+      'Heel-to-toe walking',
+      'March + arm movements',
+      'Alternating toe taps',
+      'Clock stepping',
+      'Step in different directions on command',
+      'Single-leg reach in different directions',
+      'Walking while turning the head',
+    ],
+  },
+  {
+    id: 'functional',
+    title: 'Functional movement patterns',
+    items: [
+      'Sit-to-stand',
+      'Squat',
+      'Supported deep squat',
+      'Step-up',
+      'Step-down',
+      'Side step',
+      'Reverse step',
+      'Lateral squat',
+      'Hip hinge',
+      'Reach-to-floor',
+      'Reach overhead',
+      'Carry and walk',
+      'Pick something up from the floor',
+      'Put something onto a high shelf',
+      'Push/pull an object',
+      'Turn and reach',
+      'Walk backwards',
+      'Walk sideways',
+    ],
+  },
+  {
+    id: 'carry',
+    title: 'Carrying & everyday capability',
+    note: 'Keep the weight light. Walk well and keep posture.',
+    items: [
+      'Farmer carry',
+      'Suitcase carry',
+      'Front carry',
+      'Carry while walking',
+      'Carry up/down stairs',
+      'Carry and turn',
+      'Carry and step over an obstacle',
+    ],
+  },
+  {
+    id: 'stairs',
+    title: 'Step & stair skills',
+    note: 'Controlled stair descent is especially worth practising.',
+    items: [
+      'Low step-ups',
+      'Alternating step-ups',
+      'Controlled step-downs',
+      'Side step-ups',
+      'Step-up + knee lift',
+      'Stair walking',
+      'Slow stair descent',
+      'One-step-at-a-time → alternating stairs',
+      'Step over a low obstacle',
+      'Step around an obstacle',
+    ],
+  },
+  {
+    id: 'agility',
+    title: 'Reaction & agility',
+    later: true,
+    note: 'Add these later. No jumping or burpees needed.',
+    items: [
+      'Quick step-touch',
+      'Fast marching',
+      'Direction-change walking',
+      'Step forward/back on cue',
+      'Side-step on cue',
+      'Toe taps',
+      'Low obstacle stepping',
+      'Multi-directional stepping',
+      'Catching/throwing a soft ball while standing',
+      'Catching while standing on a slightly narrower stance',
+      'Reaction to a visual/auditory cue',
+    ],
+  },
+  {
+    id: 'flexibility',
+    title: 'Flexibility',
+    items: [
+      'Calf stretch',
+      'Hip flexor stretch',
+      'Hamstring stretch',
+      'Figure-4 stretch',
+      'Adductor stretch',
+      'Gentle quad stretch',
+      'Chest stretch',
+      'Shoulder stretch',
+      'Lat stretch',
+      'Thoracic rotation',
+      'Supported deep squat hold',
+      '90/90 hip position',
+      'Cross-legged sitting',
+    ],
+  },
+  {
+    id: 'breathing',
+    title: 'Breathing / relaxation',
+    note: 'Use as a cool-down. Tai Chi-style slow movement also fits here.',
+    items: [
+      'Diaphragmatic breathing',
+      'Slow nasal breathing',
+      'Long-exhale breathing',
+      'Relaxed lying-down breathing',
+      'Gentle body scan',
+    ],
+  },
+]
