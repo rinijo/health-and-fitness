@@ -1,7 +1,6 @@
-import { collection, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore'
-import { DEMO_GOBLET_SQUAT_LOGS, SEED_EXERCISES, SEED_PLANS, SEED_WARMUP } from '../data/seed'
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, writeBatch } from 'firebase/firestore'
+import { SEED_EXERCISES, SEED_PLANS, SEED_WARMUP } from '../data/seed'
 import { getDb } from '../lib/firebase'
-import type { WorkoutLog } from '../types/workoutLog'
 
 export async function seedIfEmpty(): Promise<boolean> {
   const db = getDb()
@@ -53,24 +52,25 @@ export async function ensureWarmupSeeded(): Promise<void> {
   }
 }
 
-export async function ensureGobletSquatDemoLogs(): Promise<void> {
-  const db = getDb()
-  const existing = await getDocs(collection(db, 'workoutLogs'))
-  const gobletCount = existing.docs.filter((item) => {
-    const log = item.data() as WorkoutLog
-    return log.exercises?.some((entry) => entry.exerciseId === 'goblet-squat')
-  }).length
-  if (gobletCount >= 3) return
+const STARTING_WEIGHTS_RESET = 'starting-weights-2026-10-10'
 
-  for (const demo of DEMO_GOBLET_SQUAT_LOGS) {
-    const ref = doc(db, 'workoutLogs', demo.id)
-    const snapshot = await getDoc(ref)
-    if (!snapshot.exists()) {
-      await setDoc(ref, demo)
-      continue
-    }
-    const log = snapshot.data() as WorkoutLog
-    if (log.exercises.some((entry) => entry.exerciseId === 'goblet-squat')) continue
-    await setDoc(ref, { ...log, exercises: [...log.exercises, ...demo.exercises] })
+export async function applyStartingWeightsReset(): Promise<void> {
+  const db = getDb()
+  const flagRef = doc(db, 'meta', 'reset')
+  const flag = await getDoc(flagRef)
+  if (flag.data()?.id === STARTING_WEIGHTS_RESET) return
+
+  const logs = await getDocs(collection(db, 'workoutLogs'))
+  await Promise.all(logs.docs.map((item) => deleteDoc(item.ref)))
+
+  const batch = writeBatch(db)
+  for (const plan of SEED_PLANS) {
+    batch.set(doc(db, 'plans', plan.id), plan)
   }
+  for (const exercise of SEED_EXERCISES) {
+    batch.set(doc(db, 'exercises', exercise.id), exercise, { merge: true })
+  }
+  batch.set(doc(db, 'warmups', 'default'), SEED_WARMUP)
+  batch.set(flagRef, { id: STARTING_WEIGHTS_RESET, appliedAt: new Date().toISOString() })
+  await batch.commit()
 }

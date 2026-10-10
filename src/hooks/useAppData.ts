@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { listExercises } from '../services/exercises'
 import { listPlans } from '../services/plans'
-import { ensureGobletSquatDemoLogs, ensureWarmupSeeded, seedIfEmpty } from '../services/seed'
+import { applyStartingWeightsReset, ensureWarmupSeeded, seedIfEmpty } from '../services/seed'
 import { getWarmup } from '../services/warmup'
 import { listWorkoutLogs } from '../services/workoutLogs'
 import type { Exercise } from '../types/exercise'
@@ -22,7 +22,7 @@ export function useAppData() {
     try {
       await seedIfEmpty()
       await ensureWarmupSeeded()
-      await ensureGobletSquatDemoLogs()
+      await applyStartingWeightsReset()
       const [nextExercises, nextPlans, nextWarmup, nextLogs] = await Promise.all([
         listExercises(),
         listPlans(),

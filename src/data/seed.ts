@@ -1,7 +1,6 @@
 import type { Exercise } from '../types/exercise'
 import type { Plan, PlanExercise, WeightNote } from '../types/plan'
 import type { Warmup } from '../types/warmup'
-import type { WorkoutLog } from '../types/workoutLog'
 import { EXERCISE_INSTRUCTIONS } from './exerciseCopy'
 
 function media(id: string) {
@@ -66,12 +65,12 @@ export const SEED_PLANS: Plan[] = [
     exercises: [
       item('goblet-squat', 3, '8', 4, '', 1),
       item('dumbbell-romanian-deadlift', 3, '8', 3, 'each hand', 2),
-      item('one-arm-dumbbell-row', 3, '8/side', 4, '', 3),
-      item('dumbbell-chest-press', 3, '8', 3, 'each hand', 4),
-      item('dumbbell-lateral-raise', 2, '8', 1, 'each hand', 5),
+      item('one-arm-dumbbell-row', 3, '8/side', 3, '', 3),
+      item('dumbbell-chest-press', 3, '8', 2, 'each hand', 4),
+      item('dumbbell-lateral-raise', 2, '8', 2, 'each hand', 5),
       item('dumbbell-biceps-curl', 2, '8', 2, 'each hand', 6),
       item('dead-bug-heel-tap', 2, '8/side', 0, 'bodyweight', 7),
-      item('farmer-carry', 2, '30 sec', 4, 'each hand', 8),
+      item('farmer-carry', 2, '30 sec', 3, 'each hand', 8),
     ],
   },
   {
@@ -80,7 +79,7 @@ export const SEED_PLANS: Plan[] = [
     exercises: [
       item('goblet-squat', 3, '8', 4, '', 1),
       item('dumbbell-romanian-deadlift', 3, '8', 3, 'each hand', 2),
-      item('one-arm-dumbbell-row', 3, '8/side', 4, '', 3),
+      item('one-arm-dumbbell-row', 3, '8/side', 3, '', 3),
       item('incline-push-up', 3, '8', 0, 'bodyweight', 4),
       item('seated-dumbbell-shoulder-press', 2, '8', 2, 'each hand', 5),
       item('overhead-dumbbell-triceps-extension', 2, '8', 2, '', 6),
@@ -92,47 +91,15 @@ export const SEED_PLANS: Plan[] = [
     id: 'C',
     name: 'Plan C',
     exercises: [
-      item('step-up', 3, '8/leg', 0, 'bodyweight', 1),
+      item('step-up', 3, '8/leg', 4, '', 1),
       item('dumbbell-hip-thrust', 3, '8', 0, 'bodyweight', 2),
-      item('dumbbell-chest-press', 3, '8', 3, 'each hand', 3),
-      item('one-arm-dumbbell-row', 3, '8/side', 4, '', 4),
+      item('dumbbell-chest-press', 3, '8', 2, 'each hand', 3),
+      item('one-arm-dumbbell-row', 3, '8/side', 3, '', 4),
       item('seated-dumbbell-shoulder-press', 2, '8', 2, 'each hand', 5),
-      item('dumbbell-lateral-raise', 2, '8', 1, 'each hand', 6),
+      item('dumbbell-lateral-raise', 2, '8', 2, 'each hand', 6),
       item('dead-bug-heel-tap', 2, '8/side', 0, 'bodyweight', 7),
-      item('farmer-carry', 2, '30 sec', 4, 'each hand', 8),
+      item('farmer-carry', 2, '30 sec', 3, 'each hand', 8),
     ],
   },
 ]
 
-function gobletSession(
-  date: string,
-  actualReps: string,
-  difficulty: WorkoutLog['exercises'][number]['difficulty'],
-): WorkoutLog {
-  return {
-    id: date,
-    workoutDate: date,
-    createdAt: `${date}T10:00:00.000Z`,
-    planId: 'A',
-    exercises: [
-      {
-        exerciseId: 'goblet-squat',
-        exerciseName: 'Goblet squat',
-        plannedWeight: 4,
-        plannedReps: '8',
-        plannedSets: 3,
-        actualWeight: 4,
-        actualReps,
-        actualSets: 3,
-        difficulty,
-        notes: '',
-      },
-    ],
-  }
-}
-
-export const DEMO_GOBLET_SQUAT_LOGS: WorkoutLog[] = [
-  gobletSession('2026-09-21', '8', 'good'),
-  gobletSession('2026-09-28', '8', 'good'),
-  gobletSession('2026-10-05', '10', 'easy'),
-]

@@ -11,13 +11,35 @@ import type { Exercise } from '../types/exercise'
 import type { PlanExercise } from '../types/plan'
 import type { Difficulty } from '../types/workoutLog'
 
+function checklistStorageKey(dateId: string) {
+  return `home-checklist:${dateId}`
+}
+
+function readCheckedIds(dateId: string): string[] {
+  try {
+    const raw = sessionStorage.getItem(checklistStorageKey(dateId))
+    if (!raw) return []
+    const parsed: unknown = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed.filter((item) => typeof item === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+function writeCheckedIds(dateId: string, ids: string[]) {
+  try {
+    sessionStorage.setItem(checklistStorageKey(dateId), JSON.stringify(ids))
+  } catch {
+    // Ignore quota or private-mode write failures.
+  }
+}
+
 export function HomePage() {
   const { user } = useAuth()
   const { exercises, plans, warmup, logs, loading, error, reload, setLogs } = useAppData()
-  const [checkedIds, setCheckedIds] = useState<string[]>([])
-  const [logging, setLogging] = useState<{ exercise: Exercise; planned: PlanExercise } | null>(null)
-
   const todayId = localDateId()
+  const [checkedIds, setCheckedIds] = useState<string[]>(() => readCheckedIds(todayId))
+  const [logging, setLogging] = useState<{ exercise: Exercise; planned: PlanExercise } | null>(null)
   const todayPlanId = planIdForDate()
   const todayKind = dayKindForDate()
   const todayPlan = plans.find((plan) => plan.id === todayPlanId) ?? null
@@ -48,9 +70,15 @@ export function HomePage() {
   }, [exercises, todayPlan])
 
   function toggleChecked(id: string, checked: boolean) {
-    setCheckedIds((current) =>
-      checked ? [...current, id] : current.filter((item) => item !== id),
-    )
+    setCheckedIds((current) => {
+      const next = checked
+        ? current.includes(id)
+          ? current
+          : [...current, id]
+        : current.filter((item) => item !== id)
+      writeCheckedIds(todayId, next)
+      return next
+    })
   }
 
   async function saveLog(input: {
